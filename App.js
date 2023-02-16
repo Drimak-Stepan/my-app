@@ -1,117 +1,80 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
-  TextInput,
-  Text,
   TouchableWithoutFeedback,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
-  Alert,
-  TouchableOpacity,
   ImageBackground,
 } from "react-native";
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
 
-import * as Font from "expo-font";
-import { AppLoading } from "expo";
+import RegistrationScreen from "./Screens/RegistrationScreen";
+import LoginScreen from "./Screens/LoginScreen";
 
-export default function App() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const initialState = { name: "", email: "", password: "" };
+
+const App = () => {
+  const [state, setState] = useState(initialState);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
-  const nameHandler = (text) => setName(text);
-  const emailHandler = (text) => setEmail(text);
-  const passwordHandler = (text) => setPassword(text);
+  const [loaded] = useFonts({
+    "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
+    "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
+  });
+
+  useEffect(() => {
+    async function prepare() {
+      await SplashScreen.preventAutoHideAsync();
+    }
+    prepare();
+  }, []);
+
+  if (!loaded) {
+    return undefined;
+  } else {
+    SplashScreen.hideAsync();
+  }
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
-    Alert.alert("Credentials", `${name} + ${password}`);
     Keyboard.dismiss();
+    console.log(state);
+    setState(initialState);
   };
 
   return (
-    <TouchableWithoutFeedback onPress={keyboardHide}>
-      <View style={styles.container}>
-        <ImageBackground
-          style={styles.bgr}
-          source={require("./assets/images/photoBG.png")}
+    <>
+      <KeyboardAvoidingView
+        // behavior={Platform.OS == "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
+        <TouchableWithoutFeedback
+          onPress={() => {
+            Keyboard.dismiss();
+            setIsShowKeyboard(false);
+          }}
         >
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
+          <ImageBackground
+            style={styles.bgr}
+            source={require("./assets/images/photoBG.png")}
           >
-            <View
-              style={{
-                ...styles.form,
-                marginBottom: isShowKeyboard ? 116 : 78,
-              }}
-            >
-              <View>
-                <View style={styles.header}>
-                  <Text style={styles.headerTitle}>Реєстрація</Text>
-                </View>
-                <View>
-                  <View>
-                    <View>
-                      <TextInput
-                        onFocus={() => {
-                          setIsShowKeyboard(true);
-                        }}
-                        value={name}
-                        onChangeText={nameHandler}
-                        placeholder="Логін"
-                        style={styles.input}
-                      />
-                    </View>
-                    <View>
-                      <TextInput
-                        onFocus={() => {
-                          setIsShowKeyboard(true);
-                        }}
-                        value={email}
-                        onChangeText={emailHandler}
-                        placeholder="Адрес електронної пошти"
-                        secureTextEntry={true}
-                        style={styles.input}
-                      />
-                    </View>
-                    <View>
-                      <TextInput
-                        onFocus={() => {
-                          setIsShowKeyboard(true);
-                        }}
-                        value={password}
-                        onChangeText={passwordHandler}
-                        placeholder="Пароль"
-                        secureTextEntry={true}
-                        style={styles.input}
-                      />
-                    </View>
-                  </View>
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    style={styles.btn}
-                    onPress={keyboardHide}
-                  >
-                    <Text style={styles.btnTitle}>Зареєструватися</Text>
-                  </TouchableOpacity>
-                  <View>
-                    <Text style={{ color: "#FFF" }}>Вже є акаунт?</Text>
-                    <TouchableOpacity>
-                      <Text style={{ color: "#FFF" }}>Увійти</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </KeyboardAvoidingView>
-        </ImageBackground>
-      </View>
-    </TouchableWithoutFeedback>
+            <RegistrationScreen
+              keyboard={{ keyboardHide, setIsShowKeyboard, isShowKeyboard }}
+              state={{ state, setState }}
+            />
+            {/* <LoginScreen
+              keyboard={{ keyboardHide, setIsShowKeyboard, isShowKeyboard }}
+              state={{ state, setState }}
+            /> */}
+          </ImageBackground>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -121,37 +84,10 @@ const styles = StyleSheet.create({
 
   bgr: {
     flex: 1,
-    resizeMode: "center",
+    resizeMode: "cover",
     justifyContent: "flex-end",
-  },
-
-  input: {
-    height: 50,
-    paddingTop: 16,
-    paddingBottom: 15,
-    paddingLeft: 16,
-    borderWidth: 1,
-    borderColor: "#E8E8E8",
-    borderRadius: 8,
-    backgroundColor: "#F6F6F6",
-    marginBottom: 16,
-  },
-
-  form: { marginHorizontal: 16 },
-
-  btn: {
-    justifyContent: "center",
     alignItems: "center",
-    height: 51,
-    borderRadius: 100,
-
-    ...Platform.select({
-      ios: { backgroundColor: "#FF6C00" },
-      android: { backgroundColor: "#FF6C00" },
-    }),
   },
-  btnTitle: { color: "#FFFFFF", fontSize: 16 },
-
-  header: { alignItems: "center", marginBottom: 33 },
-  headerTitle: { color: "#fff", fontSize: 30 },
 });
+
+export default App;
