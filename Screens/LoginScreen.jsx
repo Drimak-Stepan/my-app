@@ -10,10 +10,13 @@ import {
   Dimensions,
 } from "react-native";
 
-const LoginScreen = ({ state, keyboard }) => {
+const LoginScreen = ({ state, keyboard, isLogin }) => {
   const [dimensions, setDimensions] = useState(
     Dimensions.get("window").width - 16 * 2
   );
+
+  const [isFocus, setIsFocus] = useState();
+
   useEffect(() => {
     const onChange = () => {
       const width = Dimensions.get("window").width - 16 * 2;
@@ -44,6 +47,7 @@ const LoginScreen = ({ state, keyboard }) => {
         <View>
           <TextInput
             onFocus={() => {
+              setIsFocus(1);
               keyboard.setIsShowKeyboard(true);
             }}
             value={state.state.email}
@@ -54,8 +58,15 @@ const LoginScreen = ({ state, keyboard }) => {
               }))
             }
             placeholder="Адрес електронної пошти"
-            secureTextEntry={true}
-            style={styles.input}
+            style={
+              isFocus !== 1
+                ? { ...styles.input }
+                : {
+                    ...styles.input,
+                    borderColor: "#FF6C00",
+                    backgroundColor: "#FFFFFF",
+                  }
+            }
           />
         </View>
         <View
@@ -65,6 +76,7 @@ const LoginScreen = ({ state, keyboard }) => {
         >
           <TextInput
             onFocus={() => {
+              setIsFocus(2);
               keyboard.setIsShowKeyboard(true);
             }}
             value={state.state.password}
@@ -76,7 +88,15 @@ const LoginScreen = ({ state, keyboard }) => {
             }
             placeholder="Пароль"
             secureTextEntry={true}
-            style={styles.input}
+            style={
+              isFocus !== 2
+                ? { ...styles.input }
+                : {
+                    ...styles.input,
+                    borderColor: "#FF6C00",
+                    backgroundColor: "#FFFFFF",
+                  }
+            }
           />
           <View>
             <TouchableOpacity>
@@ -101,7 +121,7 @@ const LoginScreen = ({ state, keyboard }) => {
           </TouchableOpacity>
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
             <Text style={{ color: "#000" }}>Немає акаунту? </Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => isLogin.setIsLogin(false)}>
               <Text style={{ color: "#000" }}>Зареєструватися</Text>
             </TouchableOpacity>
           </View>

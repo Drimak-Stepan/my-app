@@ -18,6 +18,7 @@ const initialState = { name: "", email: "", password: "" };
 
 const App = () => {
   const [state, setState] = useState(initialState);
+  const [isLogin, setIsLogin] = useState(false);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
   const [loaded] = useFonts({
@@ -48,7 +49,7 @@ const App = () => {
   return (
     <>
       <KeyboardAvoidingView
-        // behavior={Platform.OS == "ios" ? "padding" : "height"}
+        behavior={Platform.OS == "ios" ? "padding" : "height"}
         style={styles.container}
       >
         <TouchableWithoutFeedback
@@ -61,14 +62,19 @@ const App = () => {
             style={styles.bgr}
             source={require("./assets/images/photoBG.png")}
           >
-            <RegistrationScreen
-              keyboard={{ keyboardHide, setIsShowKeyboard, isShowKeyboard }}
-              state={{ state, setState }}
-            />
-            {/* <LoginScreen
-              keyboard={{ keyboardHide, setIsShowKeyboard, isShowKeyboard }}
-              state={{ state, setState }}
-            /> */}
+            {isLogin ? (
+              <LoginScreen
+                isLogin={{ isLogin, setIsLogin }}
+                keyboard={{ keyboardHide, setIsShowKeyboard, isShowKeyboard }}
+                state={{ state, setState }}
+              />
+            ) : (
+              <RegistrationScreen
+                isLogin={{ isLogin, setIsLogin }}
+                keyboard={{ keyboardHide, setIsShowKeyboard, isShowKeyboard }}
+                state={{ state, setState }}
+              />
+            )}
           </ImageBackground>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>

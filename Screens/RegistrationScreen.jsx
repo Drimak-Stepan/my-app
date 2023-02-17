@@ -10,10 +10,12 @@ import {
   Dimensions,
 } from "react-native";
 
-const RegistrationScreen = ({ state, keyboard }) => {
+const RegistrationScreen = ({ state, keyboard, isLogin }) => {
   const [dimensions, setDimensions] = useState(
     Dimensions.get("window").width - 16 * 2
   );
+  const [isFocus, setIsFocus] = useState();
+
   useEffect(() => {
     const onChange = () => {
       const width = Dimensions.get("window").width - 16 * 2;
@@ -44,6 +46,7 @@ const RegistrationScreen = ({ state, keyboard }) => {
         <View>
           <TextInput
             onFocus={() => {
+              setIsFocus(1);
               keyboard.setIsShowKeyboard(true);
             }}
             value={state.state.name}
@@ -51,12 +54,21 @@ const RegistrationScreen = ({ state, keyboard }) => {
               state.setState((prevState) => ({ ...prevState, name: value }))
             }
             placeholder="Логін"
-            style={styles.input}
+            style={
+              isFocus !== 1
+                ? { ...styles.input }
+                : {
+                    ...styles.input,
+                    borderColor: "#FF6C00",
+                    backgroundColor: "#FFFFFF",
+                  }
+            }
           />
         </View>
         <View>
           <TextInput
             onFocus={() => {
+              setIsFocus(2);
               keyboard.setIsShowKeyboard(true);
             }}
             value={state.state.email}
@@ -67,8 +79,15 @@ const RegistrationScreen = ({ state, keyboard }) => {
               }))
             }
             placeholder="Адрес електронної пошти"
-            secureTextEntry={true}
-            style={styles.input}
+            style={
+              isFocus !== 2
+                ? { ...styles.input }
+                : {
+                    ...styles.input,
+                    borderColor: "#FF6C00",
+                    backgroundColor: "#FFFFFF",
+                  }
+            }
           />
         </View>
         <View
@@ -78,6 +97,7 @@ const RegistrationScreen = ({ state, keyboard }) => {
         >
           <TextInput
             onFocus={() => {
+              setIsFocus(3);
               keyboard.setIsShowKeyboard(true);
             }}
             value={state.state.password}
@@ -89,7 +109,15 @@ const RegistrationScreen = ({ state, keyboard }) => {
             }
             placeholder="Пароль"
             secureTextEntry={true}
-            style={styles.input}
+            style={
+              isFocus !== 3
+                ? { ...styles.input }
+                : {
+                    ...styles.input,
+                    borderColor: "#FF6C00",
+                    backgroundColor: "#FFFFFF",
+                  }
+            }
           />
           <TouchableOpacity>
             <Text
@@ -113,7 +141,7 @@ const RegistrationScreen = ({ state, keyboard }) => {
         </TouchableOpacity>
         <View style={{ flexDirection: "row", justifyContent: "center" }}>
           <Text style={{ color: "#000" }}>Вже є акаунт? </Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => isLogin.setIsLogin(true)}>
             <Text style={{ color: "#000" }}>Увійти</Text>
           </TouchableOpacity>
         </View>
