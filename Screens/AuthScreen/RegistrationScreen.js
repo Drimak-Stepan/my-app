@@ -14,17 +14,16 @@ import {
   ImageBackground,
 } from "react-native";
 
-const initialState = { email: "", password: "" };
+const initialState = { name: "", email: "", password: "" };
 
-const LoginScreen = () => {
+const RegistrationScreen = ({ navigation }) => {
   const [dimensions, setDimensions] = useState(
     Dimensions.get("window").width - 16 * 2
   );
+  const [isFocus, setIsFocus] = useState();
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setState] = useState(initialState);
-  const [isFocus, setIsFocus] = useState();
-
-  const { password, name } = state;
+  const { email, password, name } = state;
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
@@ -57,7 +56,7 @@ const LoginScreen = () => {
       >
         <ImageBackground
           style={styles.bgr}
-          source={require("../assets/images/photoBG.png")}
+          source={require("../../assets/images/photoBG.png")}
         >
           <View
             style={{
@@ -68,16 +67,38 @@ const LoginScreen = () => {
               style={{
                 ...styles.form,
                 width: dimensions,
-                marginBottom: isShowKeyboard ? -105 : 144,
+                marginBottom: isShowKeyboard ? -105 : 78,
               }}
             >
               <View style={styles.header}>
-                <Text style={styles.headerTitle}>Увійти</Text>
+                <Text style={styles.headerTitle}>Реєстрація</Text>
               </View>
               <View>
                 <TextInput
                   onFocus={() => {
                     setIsFocus(1);
+                    setIsShowKeyboard(true);
+                  }}
+                  value={name}
+                  onChangeText={(value) =>
+                    setState((prevState) => ({ ...prevState, name: value }))
+                  }
+                  placeholder="Логін"
+                  style={
+                    isFocus !== 1
+                      ? { ...styles.input }
+                      : {
+                          ...styles.input,
+                          borderColor: "#FF6C00",
+                          backgroundColor: "#FFFFFF",
+                        }
+                  }
+                />
+              </View>
+              <View>
+                <TextInput
+                  onFocus={() => {
+                    setIsFocus(2);
                     setIsShowKeyboard(true);
                   }}
                   value={email}
@@ -89,7 +110,7 @@ const LoginScreen = () => {
                   }
                   placeholder="Адрес електронної пошти"
                   style={
-                    isFocus !== 1
+                    isFocus !== 2
                       ? { ...styles.input }
                       : {
                           ...styles.input,
@@ -106,7 +127,7 @@ const LoginScreen = () => {
               >
                 <TextInput
                   onFocus={() => {
-                    setIsFocus(2);
+                    setIsFocus(3);
                     setIsShowKeyboard(true);
                   }}
                   value={password}
@@ -119,7 +140,7 @@ const LoginScreen = () => {
                   placeholder="Пароль"
                   secureTextEntry={true}
                   style={
-                    isFocus !== 2
+                    isFocus !== 3
                       ? { ...styles.input }
                       : {
                           ...styles.input,
@@ -128,38 +149,74 @@ const LoginScreen = () => {
                         }
                   }
                 />
-                <View>
-                  <TouchableOpacity>
-                    <Text
-                      style={{
-                        color: "#1B4371",
-                        position: "absolute",
-                        right: 16,
-                        bottom: 30,
-                      }}
-                    >
-                      Показати
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  style={styles.btn}
-                  onPress={keyboardHide}
-                >
-                  <Text style={styles.btnTitle}>Увійти</Text>
+                <TouchableOpacity>
+                  <Text
+                    style={{
+                      color: "#1B4371",
+                      position: "absolute",
+                      right: 16,
+                      bottom: 30,
+                    }}
+                  >
+                    Показати
+                  </Text>
                 </TouchableOpacity>
-                <View
-                  style={{ flexDirection: "row", justifyContent: "center" }}
+              </View>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={styles.btn}
+                onPress={() => {
+                  navigation.navigate("Home");
+                  keyboardHide;
+                }}
+              >
+                <Text style={styles.btnTitle}>Зареєструватися</Text>
+              </TouchableOpacity>
+              <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                <Text style={{ color: "#000" }}>Вже є акаунт? </Text>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("LoginScreen")}
                 >
-                  <Text style={{ color: "#000" }}>Немає акаунту? </Text>
-                  <TouchableOpacity>
-                    <Text style={{ color: "#000" }}>Зареєструватися</Text>
-                  </TouchableOpacity>
-                </View>
+                  <Text style={{ color: "#000" }}>Увійти</Text>
+                </TouchableOpacity>
               </View>
             </View>
-
+            <View
+              style={{
+                position: "absolute",
+                left: 0,
+                top: 0,
+                transform: [{ translateX: 128 }, { translateY: -60 }],
+                backgroundColor: "#F6F6F6",
+                borderRadius: 16,
+                width: 120,
+                height: 120,
+              }}
+            >
+              <Image
+                source={
+                  isShowKeyboard
+                    ? require("../../assets/images/photoNR.png")
+                    : ""
+                }
+              ></Image>
+              <Image
+                style={{
+                  position: "absolute",
+                  width: 25,
+                  height: 25,
+                  backgroundColor: "#FFFFFF",
+                  borderRadius: 100,
+                  right: -14,
+                  bottom: 14,
+                }}
+                source={
+                  isShowKeyboard
+                    ? require("../../assets/images/icons/addN.png")
+                    : require("../../assets/images/icons/add.png")
+                }
+              ></Image>
+            </View>
             <View
               style={{
                 backgroundColor: "#212121",
@@ -192,7 +249,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-    paddingTop: 32,
+    paddingTop: 92,
   },
 
   form: { marginHorizontal: 16 },
@@ -234,4 +291,4 @@ const styles = StyleSheet.create({
   btnTitle: { fontFamily: "Roboto-Regular", color: "#FFFFFF", fontSize: 16 },
 });
 
-export default LoginScreen;
+export default RegistrationScreen;
