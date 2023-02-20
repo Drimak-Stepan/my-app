@@ -6,7 +6,7 @@ export const PostsScreen = ({ route }) => {
   console.log(name);
   console.log(email);
   return (
-    <View>
+    <View style={styles.bgr}>
       <View style={styles.container}>
         <View
           style={{
@@ -58,6 +58,7 @@ export const PostsScreen = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
+  bgr: { flex: 1, backgroundColor: "#ffffff" },
   container: {
     flexDirection: "row",
     paddingTop: 32,
