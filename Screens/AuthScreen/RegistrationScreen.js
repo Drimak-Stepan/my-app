@@ -14,7 +14,12 @@ import {
   ImageBackground,
 } from "react-native";
 
-const initialState = { name: "", email: "", password: "" };
+const initialState = {
+  image: "../../assets/images/photoNR.png",
+  name: "",
+  email: "",
+  password: "",
+};
 
 const RegistrationScreen = ({ navigation }) => {
   const [dimensions, setDimensions] = useState(
@@ -23,7 +28,7 @@ const RegistrationScreen = ({ navigation }) => {
   const [isFocus, setIsFocus] = useState();
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setState] = useState(initialState);
-  const { email, password, name } = state;
+  const { email, password, name, image } = state;
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
@@ -166,7 +171,11 @@ const RegistrationScreen = ({ navigation }) => {
                 activeOpacity={0.7}
                 style={styles.btn}
                 onPress={() => {
-                  navigation.navigate("Home");
+                  navigation.navigate("Home", {
+                    email,
+                    name,
+                    image,
+                  });
                   keyboardHide;
                 }}
               >
