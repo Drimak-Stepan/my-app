@@ -16,27 +16,39 @@ import { Feather } from "@expo/vector-icons";
 const COURSES = [
   {
     id: "45k6-j54k-4jth",
-    title: "HTML",
+    nameLocation: "Forrest",
+    likes: 2,
+    comments: 4,
+    location: "Ukraine",
   },
   {
     id: "4116-jfk5-43rh",
-    title: "JavaScript",
+    nameLocation: "Forrest",
+    likes: 2,
+    comments: 4,
+    location: "Ukraine",
   },
   {
     id: "4d16-5tt5-4j55",
-    title: "React",
+    nameLocation: "Forrest",
+    likes: 2,
+    comments: 4,
+    location: "Ukraine",
   },
   {
     id: "LG16-ant5-0J25",
-    title: "React Native",
+    nameLocation: "Forrest",
+    likes: 2,
+    comments: 4,
+    location: "Ukraine",
   },
 ];
 
-const ProfileScreen = ({ navigation }) => {
+const ProfileScreen = ({ navigation, route }) => {
+  const { name, location, nameLocation, imageBG } = route.params;
+
   const [courses, setCourses] = useState(COURSES);
-  const [dimensions, setDimensions] = useState(
-    Dimensions.get("window").width - 16 * 2
-  );
+  const [dimensions, setDimensions] = useState(Dimensions.get("window").width);
   useEffect(() => {
     const onChange = () => {
       const width = Dimensions.get("window").width;
@@ -55,14 +67,88 @@ const ProfileScreen = ({ navigation }) => {
       >
         <SafeAreaView style={{ ...styles.home, width: dimensions }}>
           <View style={styles.header}>
-            <Text style={styles.title}>Hello</Text>
+            <Text style={styles.title}>{name}</Text>
           </View>
 
           <FlatList
             style={styles.flat}
             data={courses}
             renderItem={({ item }) => (
-              <Text style={styles.item}>{item.title}</Text>
+              <View>
+                <View style={styles.item}></View>
+                <Text style={styles.itemTitle}>{item.nameLocation}</Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginBottom: 32,
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                    }}
+                  >
+                    <TouchableOpacity
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        marginRight: 24,
+                      }}
+                    >
+                      <Feather
+                        name="message-circle"
+                        size={24}
+                        color="#FF6C00"
+                      />
+                      <Text
+                        style={{
+                          fontFamily: "Roboto-Regular",
+                          color: "#212121",
+                          fontSize: 16,
+                          marginLeft: 6,
+                        }}
+                      >
+                        {item.comments}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{ flexDirection: "row", alignItems: "center" }}
+                    >
+                      <Feather name="thumbs-up" size={24} color="#FF6C00" />
+                      <Text
+                        style={{
+                          fontFamily: "Roboto-Regular",
+                          color: "#212121",
+                          fontSize: 16,
+                          marginLeft: 6,
+                        }}
+                      >
+                        {item.likes}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Feather name="map-pin" size={24} color="#BDBDBD" />
+                    <Text
+                      style={{
+                        fontFamily: "Roboto-Regular",
+                        color: "#212121",
+                        fontSize: 16,
+                        marginLeft: 6,
+                        textDecorationLine: "underline",
+                      }}
+                    >
+                      {item.location}
+                    </Text>
+                  </View>
+                </View>
+              </View>
             )}
             keyExtractor={(item) => item.id}
           />
@@ -138,8 +224,22 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
+    marginBottom: 129,
   },
-  item: { height: 240 },
+  item: {
+    backgroundColor: "#F6F6F6",
+    height: 240,
+    borderWidth: 1,
+    borderColor: "#E8E8E8",
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  itemTitle: {
+    fontFamily: "Roboto-Medium",
+    color: "#212121",
+    fontSize: 16,
+    marginBottom: 11,
+  },
 });
 
 export default ProfileScreen;

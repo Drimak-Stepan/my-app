@@ -11,25 +11,6 @@ import MapScreen from "../MapScreen";
 import ProfileScreen from "./ProfileScreen";
 import { PostsScreen } from "./PostsScreen";
 
-const CustomTabCreatePost = ({ children, onPress }) => {
-  return (
-    <TouchableOpacity onPress={onPress}>
-      <View
-        style={{
-          backgroundColor: "#FF6C00",
-          width: 70,
-          height: 40,
-          borderRadius: 20,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        {children}
-      </View>
-    </TouchableOpacity>
-  );
-};
-
 export const Home = ({ navigation, route }) => {
   const { email, name, image } = route.params;
   return (
@@ -64,6 +45,8 @@ export const Home = ({ navigation, route }) => {
           paddingBottom: 34,
         },
         tabBarShowLabel: false,
+        tabBarHideOnKeyboard: true,
+
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
           let iconColor;
@@ -83,10 +66,6 @@ export const Home = ({ navigation, route }) => {
           }
           return <Feather name={iconName} size={iconSize} color={iconColor} />;
         },
-        // tabBarOptions: {
-        //   activeTintColor: "#FF6C00",
-        //   inactiveTintColor: "#BDBDBD",
-        // },
       })}
     >
       <MainTab.Screen
@@ -106,47 +85,57 @@ export const Home = ({ navigation, route }) => {
         component={PostsScreen}
       />
       <MainTab.Screen
-        options={{
-          title: "Створити публікацію",
-          headerLeft: () => (
-            <TouchableOpacity
-              style={{ position: "absolute", bottom: 10, left: 10 }}
-              onPress={() => navigation.navigate("PostsScreen")}
-            >
-              <Feather name="arrow-left" size={24} color="#212121" />
-            </TouchableOpacity>
-          ),
-
-          tabBarButton: ({ props, children }) => (
-            <TouchableOpacity
-              onPress={() => navigation.navigate("CreatePostsScreen")}
-              style={{ justifyContent: "center", alignItems: "center" }}
-            >
-              <View
-                style={{
-                  backgroundColor: "#FF6C00",
-                  width: 70,
-                  height: 40,
-                  borderRadius: 20,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                {children}
-              </View>
-            </TouchableOpacity>
-          ),
-        }}
         name="CreatePostsScreen"
         component={CreatePostsScreen}
+        options={({ route, navigation }) => ({
+          title: "Створити публікацію",
+          headerLeft: () => {
+            return (
+              <TouchableOpacity
+                style={{ position: "absolute", bottom: 10, left: 10 }}
+                onPress={() => navigation.navigate("PostsScreen")}
+              >
+                <Feather name="arrow-left" size={24} color="#212121" />
+              </TouchableOpacity>
+            );
+          },
+
+          tabBarButton: ({ children }) => {
+            const isFocused = navigation.isFocused();
+            let colorB = isFocused ? "#F6F6F6" : "#FF6C00";
+
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("CreatePostsScreen");
+                }}
+                style={{ justifyContent: "center", alignItems: "center" }}
+              >
+                <View
+                  style={{
+                    backgroundColor: `${colorB}`,
+                    width: 70,
+                    height: 40,
+                    borderRadius: 20,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {children}
+                </View>
+              </TouchableOpacity>
+            );
+          },
+        })}
       />
       <MainTab.Screen
+        name="ProfileScreen"
+        component={ProfileScreen}
+        initialParams={{ name, image }}
         options={{
           title: "Профіль",
           headerShown: false,
         }}
-        name="ProfileScreen"
-        component={ProfileScreen}
       />
     </MainTab.Navigator>
   );

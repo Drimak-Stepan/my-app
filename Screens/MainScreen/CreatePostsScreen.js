@@ -9,6 +9,11 @@ import {
 import { FontAwesome } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 const CreatePostsScreen = () => {
+  const initialState = {
+    imageBG: "../../assets/images/photoBG.png",
+    nameLocation: "",
+    location: "",
+  };
   return (
     <View style={styles.container}>
       <View style={styles.takePhoto}>
@@ -64,8 +69,13 @@ const CreatePostsScreen = () => {
       <TouchableOpacity
         activeOpacity={0.7}
         style={styles.btn}
-        // onPress={() => {
-        // }}
+        onPress={() => {
+          navigation.navigate("ProfileScreen", {
+            location,
+            nameLocation,
+            imageBG,
+          });
+        }}
       >
         <Text style={styles.btnTitle}>Опублікувати</Text>
       </TouchableOpacity>
