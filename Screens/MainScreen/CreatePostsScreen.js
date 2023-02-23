@@ -79,6 +79,25 @@ const CreatePostsScreen = () => {
       >
         <Text style={styles.btnTitle}>Опублікувати</Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate("CreatePostsScreen");
+        }}
+        style={{ justifyContent: "center", alignItems: "center" }}
+      >
+        <View
+          style={{
+            backgroundColor: "#F6F6F6",
+            width: 70,
+            height: 40,
+            borderRadius: 20,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Feather name="trash-2" size={24} color="#BDBDBD" />
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -123,7 +142,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: 51,
     borderRadius: 100,
-    marginBottom: 16,
+    marginBottom: 120,
     ...Platform.select({
       ios: { backgroundColor: "#F6F6F6" },
       android: { backgroundColor: "#F6F6F6" },

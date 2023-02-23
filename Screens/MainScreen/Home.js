@@ -15,7 +15,7 @@ export const Home = ({ navigation, route }) => {
   const { email, name, image } = route.params;
   return (
     <MainTab.Navigator
-      initialRouteName={"Публікації"}
+      initialRouteName={"PostsScreen"}
       screenOptions={({ route }) => ({
         headerStyle: {
           height: 88,
@@ -50,21 +50,17 @@ export const Home = ({ navigation, route }) => {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
           let iconColor;
-          let iconSize;
           if (route.name === "ProfileScreen") {
-            iconName = focused ? "plus" : "user";
-            iconColor = focused ? "#BDBDBD" : "#BDBDBD";
-            iconSize = focused ? 24 : 24;
-          } else if (route.name === "CreatePostsScreen") {
-            iconName = focused ? "trash-2" : "plus";
-            iconColor = focused ? "#BDBDBD" : "#ffffff";
-            iconSize = focused ? 24 : 13;
+            iconName = "user";
+            iconColor = focused ? "#FF6C00" : "#BDBDBD";
           } else if (route.name === "PostsScreen") {
-            iconName = focused ? "grid" : "grid";
-            iconColor = focused ? "#BDBDBD" : "#BDBDBD";
-            iconSize = focused ? 24 : 24;
+            iconName = "grid";
+            iconColor = focused ? "#FF6C00" : "#BDBDBD";
+          } else if (route.name === "CreatePostsScreen") {
+            iconName = focused ? "plus" : "plus";
+            iconColor = focused ? "#212121" : "#ffffff";
           }
-          return <Feather name={iconName} size={iconSize} color={iconColor} />;
+          return <Feather name={iconName} size={24} color={iconColor} />;
         },
       })}
     >
@@ -99,11 +95,14 @@ export const Home = ({ navigation, route }) => {
               </TouchableOpacity>
             );
           },
+          tabBarStyle: {
+            height: 0,
+            borderTopWidth: 0,
+            marginBottom: 5,
+          },
 
           tabBarButton: ({ children }) => {
             const isFocused = navigation.isFocused();
-            let colorB = isFocused ? "#F6F6F6" : "#FF6C00";
-
             return (
               <TouchableOpacity
                 onPress={() => {
@@ -113,9 +112,9 @@ export const Home = ({ navigation, route }) => {
               >
                 <View
                   style={{
-                    backgroundColor: `${colorB}`,
-                    width: 70,
-                    height: 40,
+                    backgroundColor: isFocused ? "#212121" : "#FF6C00",
+                    width: isFocused ? 134 : 70,
+                    height: isFocused ? 5 : 40,
                     borderRadius: 20,
                     justifyContent: "center",
                     alignItems: "center",
