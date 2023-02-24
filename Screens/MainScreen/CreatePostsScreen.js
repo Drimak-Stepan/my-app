@@ -1,28 +1,91 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  Image,
 } from "react-native";
+import { Camera } from "expo-camera";
+import * as MediaLibrary from "expo-media-library";
+import * as Location from "expo-location";
+
 import { FontAwesome } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
-const CreatePostsScreen = () => {
+
+const CreatePostsScreen = ({ navigation }) => {
+  const [camera, setCamera] = useState(null);
+  const [hasPermission, setHasPermission] = useState(null);
+  const [photo, setPhoto] = useState(null);
+  const [state, setState] = useState([]);
+  const { nameLocation, location, namePhoto, finish } = state;
+  console.log(finish);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      await MediaLibrary.requestPermissionsAsync();
+      const { statusLoc } = await Location.requestForegroundPermissionsAsync();
+      setHasPermission(statusLoc === "granted");
+      setHasPermission(status === "granted");
+    })();
+  }, []);
+
+  const takePhoto = async () => {
+    const photo = await camera.takePictureAsync();
+    const loc = await Location.getCurrentPositionAsync();
+    setPhoto(photo.uri);
+    const location = {
+      latitude: loc.coords.latitude,
+      longitude: loc.coords.longitude,
+    };
+    setState((prevState) => ({ ...prevState, location }));
+  };
+
+  const clearPhoto = () => {
+    setPhoto(null);
+  };
+  const sendPhoto = () => {
+    setState([]);
+    navigation.navigate("PostsScreen", {
+      photo,
+      namePhoto,
+      nameLocation,
+      location,
+    });
+  };
+
   const initialState = {
     imageBG: "../../assets/images/photoBG.png",
-    nameLocation: "",
-    location: "",
   };
+
   return (
     <View style={styles.container}>
-      <View style={styles.takePhoto}>
+      <Camera style={styles.takePhoto} ref={setCamera}>
+        {photo && (
+          <View
+            style={{
+              position: "absolute",
+              top: -10,
+              left: -10,
+              borderColor: "#BDBDBD",
+              borderWidth: 2,
+              borderRadius: 20,
+            }}
+          >
+            <Image
+              source={{ uri: photo }}
+              style={{ height: 100, width: 100, borderRadius: 17 }}
+            />
+          </View>
+        )}
         <TouchableOpacity
           style={{
             height: 60,
             width: 60,
             borderRadius: 50,
-            backgroundColor: "#ffffff",
+            backgroundColor: "rgba(255, 255, 255, 0.3)",
             justifyContent: "center",
             alignItems: "center",
             position: "absolute",
@@ -30,11 +93,11 @@ const CreatePostsScreen = () => {
             left: 0,
             transform: [{ translateX: 140 }, { translateY: 90 }],
           }}
-          // onPress={() => navigation.navigate("LoginScreen")}
+          onPress={takePhoto}
         >
-          <FontAwesome name="camera" size={20} color="#BDBDBD" />
+          <FontAwesome name="camera" size={20} color="rgba(255, 255, 255, 1)" />
         </TouchableOpacity>
-      </View>
+      </Camera>
       <TouchableOpacity style={{ marginBottom: 32 }}>
         <Text style={styles.text}>Загрузити фото</Text>
       </TouchableOpacity>
@@ -43,7 +106,14 @@ const CreatePostsScreen = () => {
           marginBottom: 16,
         }}
       >
-        <TextInput placeholder="Назва..." style={styles.input} />
+        <TextInput
+          placeholder="Назва..."
+          style={styles.input}
+          value={namePhoto}
+          onChangeText={(value) =>
+            setState((prevState) => ({ ...prevState, namePhoto: value }))
+          }
+        />
       </View>
       <View
         style={{
@@ -54,6 +124,14 @@ const CreatePostsScreen = () => {
         <TextInput
           placeholder="Місцевість..."
           style={{ ...styles.input, paddingLeft: 28 }}
+          value={nameLocation}
+          onChangeText={(value) =>
+            setState((prevState) => ({
+              ...prevState,
+              nameLocation: value,
+              finish: true,
+            }))
+          }
         />
         <View
           style={{
@@ -68,21 +146,20 @@ const CreatePostsScreen = () => {
       </View>
       <TouchableOpacity
         activeOpacity={0.7}
-        style={styles.btn}
-        onPress={() => {
-          navigation.navigate("ProfileScreen", {
-            location,
-            nameLocation,
-            imageBG,
-          });
+        style={{
+          ...styles.btn,
+          backgroundColor: finish ? "#ff6c00" : "#F6F6F6",
         }}
+        onPress={sendPhoto}
       >
-        <Text style={styles.btnTitle}>Опублікувати</Text>
+        <Text
+          style={{ ...styles.btnTitle, color: finish ? "#ffffff" : "#BDBDBD" }}
+        >
+          Опублікувати
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("CreatePostsScreen");
-        }}
+        onPress={clearPhoto}
         style={{ justifyContent: "center", alignItems: "center" }}
       >
         <View
@@ -107,11 +184,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffffff",
     paddingTop: 32,
-    paddingBottom: 32,
     paddingLeft: 16,
     paddingRight: 16,
-    // alignItems: "center",
-    // justifyContent: "center",
   },
   takePhoto: {
     backgroundColor: "#F6F6F6",
@@ -127,14 +201,14 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Regular",
   },
   input: {
-    color: "#BDBDBD",
+    color: "#212121",
     fontSize: 16,
     fontFamily: "Roboto-Regular",
     height: 50,
     paddingTop: 16,
     paddingBottom: 15,
     borderBottomWidth: 1,
-    borderColor: "#E8E8E8",
+    borderColor: "#BDBDBD",
     backgroundColor: "#ffffff",
   },
   btn: {
@@ -149,7 +223,7 @@ const styles = StyleSheet.create({
     }),
   },
 
-  btnTitle: { fontFamily: "Roboto-Regular", color: "#BDBDBD", fontSize: 16 },
+  btnTitle: { fontFamily: "Roboto-Regular", fontSize: 16 },
 });
 
 export default CreatePostsScreen;

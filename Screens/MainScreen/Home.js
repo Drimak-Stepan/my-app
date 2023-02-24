@@ -5,9 +5,7 @@ const MainTab = createBottomTabNavigator();
 
 import { Feather } from "@expo/vector-icons";
 
-import CommentsScreen from "../CommentsScreen";
 import CreatePostsScreen from "./CreatePostsScreen";
-import MapScreen from "../MapScreen";
 import ProfileScreen from "./ProfileScreen";
 import { PostsScreen } from "./PostsScreen";
 
