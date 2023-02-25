@@ -10,9 +10,7 @@ import CommentsScreen from "./Screens/nestedScreens/CommentsScreen";
 
 export const useRoute = (isAuth) => {
   return (
-    <MainStack.Navigator
-      initialRouteName={isAuth ? "Home" : "RegistrationScreen"}
-    >
+    <MainStack.Navigator initialRouteName={!isAuth ? "Home" : "LoginScreen"}>
       <MainStack.Screen
         options={{ headerShown: false }}
         name="RegistrationScreen"

@@ -13,7 +13,6 @@ import {
 import { Feather } from "@expo/vector-icons";
 
 export const PostsScreen = ({ route, navigation }) => {
-  const { name, email, namePhoto, location, nameLocation } = route.params;
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -62,7 +61,7 @@ export const PostsScreen = ({ route, navigation }) => {
                 color: "#212121",
               }}
             >
-              {name}
+              {"name"}
             </Text>
             <Text
               style={{
@@ -72,7 +71,7 @@ export const PostsScreen = ({ route, navigation }) => {
                 color: "#212121",
               }}
             >
-              {email}
+              {"email"}
             </Text>
           </View>
         </View>

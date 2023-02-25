@@ -7,9 +7,12 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
+import { nanoid } from "nanoid";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
+import { storage } from "../../firebase/config";
+import { ref, uploadBytes } from "firebase/storage";
 
 import { FontAwesome } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
@@ -20,7 +23,6 @@ const CreatePostsScreen = ({ navigation }) => {
   const [photo, setPhoto] = useState(null);
   const [state, setState] = useState([]);
   const { nameLocation, location, namePhoto, finish } = state;
-  console.log(finish);
 
   useEffect(() => {
     (async () => {
@@ -47,13 +49,21 @@ const CreatePostsScreen = ({ navigation }) => {
     setPhoto(null);
   };
   const sendPhoto = () => {
+    uploadPhotoToServer();
     setState([]);
     navigation.navigate("PostsScreen", {
-      photo,
       namePhoto,
       nameLocation,
       location,
     });
+  };
+
+  const uploadPhotoToServer = async () => {
+    const response = await fetch(photo);
+    const file = await response.blob();
+    const uniquePostId = Date.now().toString();
+    const imagesRef = ref(storage, `postImage/${uniquePostId}`);
+    await uploadBytes(imagesRef, file);
   };
 
   const initialState = {
@@ -62,7 +72,7 @@ const CreatePostsScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Camera style={styles.takePhoto} ref={setCamera}>
+      <Camera style={{ ...styles.takePhoto }} ref={setCamera}>
         {photo && (
           <View
             style={{

@@ -13,9 +13,12 @@ import {
   KeyboardAvoidingView,
   ImageBackground,
 } from "react-native";
+import { useDispatch } from "react-redux";
+
+import { authSignUpUser } from "../../redux/auth/authOperations";
 
 const initialState = {
-  image: "../../assets/images/photoNR.png",
+  image: null,
   name: "",
   email: "",
   password: "",
@@ -30,10 +33,12 @@ const RegistrationScreen = ({ navigation }) => {
   const [state, setState] = useState(initialState);
   const { email, password, name, image } = state;
 
-  const keyboardHide = () => {
+  const dispatch = useDispatch();
+
+  const handleSubmit = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
-    console.log(state);
+    dispatch(authSignUpUser(state));
     setState(initialState);
   };
 
@@ -170,14 +175,7 @@ const RegistrationScreen = ({ navigation }) => {
               <TouchableOpacity
                 activeOpacity={0.7}
                 style={styles.btn}
-                onPress={() => {
-                  navigation.navigate("Home", {
-                    email,
-                    name,
-                    image,
-                  });
-                  keyboardHide;
-                }}
+                onPress={handleSubmit}
               >
                 <Text style={styles.btnTitle}>Зареєструватися</Text>
               </TouchableOpacity>

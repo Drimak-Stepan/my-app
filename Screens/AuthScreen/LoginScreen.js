@@ -14,6 +14,9 @@ import {
   ImageBackground,
 } from "react-native";
 
+import { useDispatch } from "react-redux";
+import { authSignInUser } from "../../redux/auth/authOperations";
+
 const initialState = { email: "", password: "" };
 
 const LoginScreen = ({ navigation }) => {
@@ -26,10 +29,12 @@ const LoginScreen = ({ navigation }) => {
 
   const { password, email } = state;
 
-  const keyboardHide = () => {
+  const dispatch = useDispatch();
+
+  const handleSubmit = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
-    console.log(state);
+    dispatch(authSignInUser(state));
     setState(initialState);
   };
 
@@ -145,10 +150,7 @@ const LoginScreen = ({ navigation }) => {
                 <TouchableOpacity
                   activeOpacity={0.7}
                   style={styles.btn}
-                  onPress={() => {
-                    navigation.navigate("Home");
-                    keyboardHide;
-                  }}
+                  onPress={handleSubmit}
                 >
                   <Text style={styles.btnTitle}>Увійти</Text>
                 </TouchableOpacity>

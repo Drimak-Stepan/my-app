@@ -45,7 +45,7 @@ const COURSES = [
 ];
 
 const ProfileScreen = ({ navigation, route }) => {
-  const { name, location, nameLocation, imageBG } = route.params;
+  const { location, nameLocation, imageBG } = route.params;
 
   const [courses, setCourses] = useState(COURSES);
   const [dimensions, setDimensions] = useState(Dimensions.get("window").width);
@@ -67,7 +67,7 @@ const ProfileScreen = ({ navigation, route }) => {
       >
         <SafeAreaView style={{ ...styles.home, width: dimensions }}>
           <View style={styles.header}>
-            <Text style={styles.title}>{name}</Text>
+            <Text style={styles.title}>{""}</Text>
           </View>
 
           <FlatList

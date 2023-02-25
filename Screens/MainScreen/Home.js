@@ -5,12 +5,19 @@ const MainTab = createBottomTabNavigator();
 
 import { Feather } from "@expo/vector-icons";
 
+import { useDispatch } from "react-redux";
+import { authSignOutUser } from "../../redux/auth/authOperations";
+
 import CreatePostsScreen from "./CreatePostsScreen";
 import ProfileScreen from "./ProfileScreen";
 import { PostsScreen } from "./PostsScreen";
 
 export const Home = ({ navigation, route }) => {
-  const { email, name, image } = route.params;
+  // const { email, name, image } = route.params;
+  const dispatch = useDispatch();
+  const signOut = () => {
+    dispatch(authSignOutUser());
+  };
   return (
     <MainTab.Navigator
       initialRouteName={"PostsScreen"}
@@ -63,13 +70,13 @@ export const Home = ({ navigation, route }) => {
       })}
     >
       <MainTab.Screen
-        initialParams={{ name, email, image }}
+        // initialParams={{ name, email, image }}
         options={{
           title: "Публікації",
           headerRight: () => (
             <TouchableOpacity
               style={{ position: "absolute", bottom: 10, right: 10 }}
-              onPress={() => navigation.navigate("LoginScreen")}
+              onPress={signOut}
             >
               <Feather name="log-out" size={24} color="#BDBDBD" />
             </TouchableOpacity>
@@ -128,7 +135,7 @@ export const Home = ({ navigation, route }) => {
       <MainTab.Screen
         name="ProfileScreen"
         component={ProfileScreen}
-        initialParams={{ name, image }}
+        // initialParams={{ name, image }}
         options={{
           title: "Профіль",
           headerShown: false,
