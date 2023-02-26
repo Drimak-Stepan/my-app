@@ -10,45 +10,24 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { authSignOutUser } from "../../redux/auth/authOperations";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../firebase/config";
 import { Feather } from "@expo/vector-icons";
 
-const COURSES = [
-  {
-    id: "45k6-j54k-4jth",
-    nameLocation: "Forrest",
-    likes: 2,
-    comments: 4,
-    location: "Ukraine",
-  },
-  {
-    id: "4116-jfk5-43rh",
-    nameLocation: "Forrest",
-    likes: 2,
-    comments: 4,
-    location: "Ukraine",
-  },
-  {
-    id: "4d16-5tt5-4j55",
-    nameLocation: "Forrest",
-    likes: 2,
-    comments: 4,
-    location: "Ukraine",
-  },
-  {
-    id: "LG16-ant5-0J25",
-    nameLocation: "Forrest",
-    likes: 2,
-    comments: 4,
-    location: "Ukraine",
-  },
-];
-
-const ProfileScreen = ({ navigation, route }) => {
-  const { location, nameLocation, imageBG } = route.params;
-
-  const [courses, setCourses] = useState(COURSES);
+const ProfileScreen = ({ navigation }) => {
+  const [posts, setPosts] = useState([]);
+  const { userId, name } = useSelector((state) => state.auth);
   const [dimensions, setDimensions] = useState(Dimensions.get("window").width);
+
+  const dispatch = useDispatch();
+
+  const signOut = () => {
+    dispatch(authSignOutUser());
+  };
+
   useEffect(() => {
     const onChange = () => {
       const width = Dimensions.get("window").width;
@@ -58,7 +37,15 @@ const ProfileScreen = ({ navigation, route }) => {
     // return () => {
     //   Dimensions.removeEventListener("change", onChange);
     // };
+    getUserPosts();
   }, []);
+
+  const getUserPosts = async () => {
+    const postsRef = await collection(db, "posts");
+    const q = await query(postsRef, where("userId", "==", userId));
+    const querySnapshot = await getDocs(q);
+    setPosts(querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  };
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -67,16 +54,22 @@ const ProfileScreen = ({ navigation, route }) => {
       >
         <SafeAreaView style={{ ...styles.home, width: dimensions }}>
           <View style={styles.header}>
-            <Text style={styles.title}>{""}</Text>
+            <Text style={styles.title}>{name}</Text>
           </View>
 
           <FlatList
             style={styles.flat}
-            data={courses}
+            data={posts}
+            keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <View>
-                <View style={styles.item}></View>
-                <Text style={styles.itemTitle}>{item.nameLocation}</Text>
+                <View style={styles.item}>
+                  <Image
+                    source={{ uri: item.photon }}
+                    style={{ height: 240, borderRadius: 8 }}
+                  />
+                </View>
+                <Text style={styles.itemTitle}>{item.namePhoto}</Text>
                 <View
                   style={{
                     flexDirection: "row",
@@ -109,7 +102,7 @@ const ProfileScreen = ({ navigation, route }) => {
                           marginLeft: 6,
                         }}
                       >
-                        {item.comments}
+                        {"1"}
                       </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -124,14 +117,20 @@ const ProfileScreen = ({ navigation, route }) => {
                           marginLeft: 6,
                         }}
                       >
-                        {item.likes}
+                        {"1"}
                       </Text>
                     </TouchableOpacity>
                   </View>
-                  <View
+
+                  <TouchableOpacity
                     style={{
                       flexDirection: "row",
                       alignItems: "center",
+                    }}
+                    onPress={() => {
+                      navigation.navigate("MapScreen", {
+                        location: item.location,
+                      });
                     }}
                   >
                     <Feather name="map-pin" size={24} color="#BDBDBD" />
@@ -144,13 +143,12 @@ const ProfileScreen = ({ navigation, route }) => {
                         textDecorationLine: "underline",
                       }}
                     >
-                      {item.location}
+                      {item.nameLocation}
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 </View>
               </View>
             )}
-            keyExtractor={(item) => item.id}
           />
           <View
             style={{
@@ -180,7 +178,7 @@ const ProfileScreen = ({ navigation, route }) => {
           </View>
           <TouchableOpacity
             style={{ position: "absolute", top: 22, right: 16 }}
-            onPress={() => navigation.navigate("LoginScreen")}
+            onPress={signOut}
           >
             <Feather name="log-out" size={24} color="#BDBDBD" />
           </TouchableOpacity>
@@ -210,6 +208,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 25,
     paddingTop: 92,
     borderTopRightRadius: 25,
+    height: 650,
   },
   header: { alignItems: "center", marginBottom: 33 },
 

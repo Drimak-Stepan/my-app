@@ -1,22 +1,21 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
-import { getDatabase } from "firebase/database";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBl_3wRzM5iwB6HI21KdbOYmH7HDy0tdns",
-  authDomain: "mythefirstnativeproject.firebaseapp.com",
-  projectId: "mythefirstnativeproject",
-  storageBucket: "mythefirstnativeproject.appspot.com",
-  messagingSenderId: "648399530062",
-  appId: "1:648399530062:web:fd5775ed6fe08bb2ccfb1f",
-  measurementId: "G-YYC5V2YJ1F",
+  apiKey: "AIzaSyBqnULwRZa-oyZ20v40WZB7HtXyvpAME6w",
+  authDomain: "myownnativeproect.firebaseapp.com",
+  projectId: "myownnativeproect",
+  storageBucket: "myownnativeproect.appspot.com",
+  messagingSenderId: "190956711713",
+  appId: "1:190956711713:web:d8d935967d4761473ad860",
+  measurementId: "G-0LZZBK3GLY",
 };
 
 export const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
-const database = getDatabase(app);
 const storage = getStorage(app);
-// const storageRef = ref(storage, "photo");
-export { auth, database, storage };
+const db = getFirestore(app);
+export { auth, db, storage };

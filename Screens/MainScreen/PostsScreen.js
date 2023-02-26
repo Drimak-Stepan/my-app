@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { nanoid } from "nanoid";
 import {
   Image,
@@ -10,16 +11,24 @@ import {
   SafeAreaView,
 } from "react-native";
 
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../firebase/config";
+
 import { Feather } from "@expo/vector-icons";
 
-export const PostsScreen = ({ route, navigation }) => {
+export const PostsScreen = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
 
+  const { userId, name, email } = useSelector((state) => state.auth);
+
+  const getAllPost = async () => {
+    const querySnapshot = await getDocs(collection(db, "posts"));
+    setPosts(querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  };
+
   useEffect(() => {
-    if (route.params) {
-      setPosts((prevState) => [...prevState, route.params]);
-    }
-  }, [route.params]);
+    getAllPost();
+  }, []);
 
   return (
     <View style={styles.bgr}>
@@ -61,7 +70,7 @@ export const PostsScreen = ({ route, navigation }) => {
                 color: "#212121",
               }}
             >
-              {"name"}
+              {name}
             </Text>
             <Text
               style={{
@@ -85,7 +94,7 @@ export const PostsScreen = ({ route, navigation }) => {
                 <View>
                   <View style={styles.item}>
                     <Image
-                      source={{ uri: item.photo }}
+                      source={{ uri: item.photon }}
                       style={{ height: 240, borderRadius: 8 }}
                     />
                   </View>
@@ -110,7 +119,8 @@ export const PostsScreen = ({ route, navigation }) => {
                         }}
                         onPress={() => {
                           navigation.navigate("CommentsScreen", {
-                            photo: item.photo,
+                            photo: item.photon,
+                            postId: item.id,
                           });
                         }}
                       >
@@ -137,9 +147,8 @@ export const PostsScreen = ({ route, navigation }) => {
                         alignItems: "center",
                       }}
                       onPress={() => {
-                        const locationMap = item.location;
                         navigation.navigate("MapScreen", {
-                          locationMap,
+                          location: item.location,
                         });
                       }}
                     >

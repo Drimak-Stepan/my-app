@@ -11,9 +11,12 @@ import { nanoid } from "nanoid";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
-import { storage } from "../../firebase/config";
-import { ref, uploadBytes } from "firebase/storage";
 
+import { storage, db } from "../../firebase/config";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { collection, addDoc } from "firebase/firestore";
+
+import { useSelector } from "react-redux";
 import { FontAwesome } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 
@@ -23,6 +26,8 @@ const CreatePostsScreen = ({ navigation }) => {
   const [photo, setPhoto] = useState(null);
   const [state, setState] = useState([]);
   const { nameLocation, location, namePhoto, finish } = state;
+
+  const { userId, name } = useSelector((state) => state.auth);
 
   useEffect(() => {
     (async () => {
@@ -49,25 +54,33 @@ const CreatePostsScreen = ({ navigation }) => {
     setPhoto(null);
   };
   const sendPhoto = () => {
-    uploadPhotoToServer();
+    uploadPostToServer();
     setState([]);
-    navigation.navigate("PostsScreen", {
-      namePhoto,
+    navigation.navigate("PostsScreen");
+  };
+  const uploadPostToServer = async () => {
+    const photon = await uploadPhotoToServer();
+    const createPost = await addDoc(collection(db, "posts"), {
       nameLocation,
+      photon,
       location,
+      namePhoto,
+      userId,
+      name,
     });
   };
-
   const uploadPhotoToServer = async () => {
     const response = await fetch(photo);
     const file = await response.blob();
     const uniquePostId = Date.now().toString();
     const imagesRef = ref(storage, `postImage/${uniquePostId}`);
     await uploadBytes(imagesRef, file);
-  };
 
-  const initialState = {
-    imageBG: "../../assets/images/photoBG.png",
+    const processedPhoto = await getDownloadURL(
+      ref(storage, `postImage/${uniquePostId}`)
+    );
+
+    return processedPhoto;
   };
 
   return (

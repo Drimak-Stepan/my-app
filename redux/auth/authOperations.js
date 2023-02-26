@@ -22,7 +22,10 @@ export const authSignUpUser =
       const { displayName, uid } = auth.currentUser;
 
       dispatch(
-        authSlice.actions.updateUserProfile({ userId: uid, name: displayName })
+        authSlice.actions.updateUserProfile({
+          userId: uid,
+          name: displayName,
+        })
       );
     } catch (error) {
       console.log("error.message", error.message);
