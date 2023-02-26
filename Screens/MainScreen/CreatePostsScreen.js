@@ -51,7 +51,9 @@ const CreatePostsScreen = ({ navigation }) => {
   };
 
   const clearPhoto = () => {
+    setCamera(null);
     setPhoto(null);
+    setState([]);
   };
   const sendPhoto = () => {
     uploadPostToServer();
@@ -82,7 +84,7 @@ const CreatePostsScreen = ({ navigation }) => {
 
     return processedPhoto;
   };
-
+  console.log(photo);
   return (
     <View style={styles.container}>
       <Camera style={{ ...styles.takePhoto }} ref={setCamera}>
@@ -103,23 +105,29 @@ const CreatePostsScreen = ({ navigation }) => {
             />
           </View>
         )}
-        <TouchableOpacity
-          style={{
-            height: 60,
-            width: 60,
-            borderRadius: 50,
-            backgroundColor: "rgba(255, 255, 255, 0.3)",
-            justifyContent: "center",
-            alignItems: "center",
-            position: "absolute",
-            top: 0,
-            left: 0,
-            transform: [{ translateX: 140 }, { translateY: 90 }],
-          }}
-          onPress={takePhoto}
-        >
-          <FontAwesome name="camera" size={20} color="rgba(255, 255, 255, 1)" />
-        </TouchableOpacity>
+        {
+          <TouchableOpacity
+            style={{
+              height: 60,
+              width: 60,
+              borderRadius: 50,
+              backgroundColor: "rgba(255, 255, 255, 0.3)",
+              justifyContent: "center",
+              alignItems: "center",
+              position: "absolute",
+              top: 0,
+              left: 0,
+              transform: [{ translateX: 140 }, { translateY: 90 }],
+            }}
+            onPress={takePhoto}
+          >
+            <FontAwesome
+              name="camera"
+              size={20}
+              color="rgba(255, 255, 255, 1)"
+            />
+          </TouchableOpacity>
+        }
       </Camera>
       <TouchableOpacity style={{ marginBottom: 32 }}>
         <Text style={styles.text}>Загрузити фото</Text>

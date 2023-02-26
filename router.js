@@ -9,7 +9,6 @@ import MapScreen from "./Screens/nestedScreens/MapScreen";
 import CommentsScreen from "./Screens/nestedScreens/CommentsScreen";
 
 export const useRoute = (isAuth) => {
-  console.log(isAuth);
   return (
     <MainStack.Navigator>
       {isAuth ? (
